@@ -11,11 +11,20 @@ const MessageForm = () => {
 
         setIsSending(true);
 
-        const id = setTimeout(()=> {
+        const id = setTimeout(() => {
             setSentMessage(message);
-            }
+            setMessage("")
+            setIsSending(false)
+        }, delay * 1000
         )
+        setTimerId(id)
     }
+
+    const handleCancel = () => {
+        if(timerId) clearTimeout(timerId);
+        setIsSending(false)
+    }
+    
 
     const [message, setMessage] = useState<string>("");
     const [delay, setDelay] = useState<number>(10);
@@ -37,13 +46,21 @@ const MessageForm = () => {
                 placeholder='Delay in seocends'
                 value={delay}
                 onChange={(e) => setDelay(Number(e.target.value))}
+                disabled={isSending}
             />
 
-            <Button className='w-full' onClick={handleSend}>
-                Delay Button
-            </Button>
+            {!isSending ? (
+                <Button className='w-full' onClick={handleSend}>
+                    Send with delay
+                </Button>
+            ) : (<Button className='w-full' variant="destructive" onClick={handleCancel}>
+                Cancel sending
+            </Button>)}
 
-
+            {sentMessage && <div className='bg-green-100 border p-3 rounded-lg text-green-900'>
+                    <p className='font-semibold'>Message Sent:</p>
+                    <p>{sentMessage}</p>
+                </div>}    
         </div>
     )
 }
